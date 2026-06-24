@@ -1,0 +1,46 @@
+name: Agent Evals and Deployment
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Install project dependencies
+        run: uv sync
+
+      - name: Install agents-cli
+        run: uv tool install google-agents-cli
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          # These secrets are typically configured during 'agents-cli infra cicd'
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.CICD_RUNNER_SA }}
+
+      - name: Run Evaluations
+        run: agents-cli eval
+
+      - name: Deploy Agent
+        # Only deploy on push to main (e.g., after PR merge)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          agents-cli deploy \
+            --project ${{ secrets.GCP_PROJECT_ID }} \
+            --region ${{ secrets.GCP_REGION }} \
+            --no-confirm-project
