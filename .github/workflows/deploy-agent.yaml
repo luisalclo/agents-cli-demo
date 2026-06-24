@@ -12,7 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./demo-agent # If your pyproject.toml is in a subdirectory, change this (e.g., ./my-agent)
+        working-directory: ./demo-agent 
+    environment: 'development'
     permissions:
       contents: 'read'
       id-token: 'write'
