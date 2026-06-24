@@ -5,10 +5,14 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   pipeline:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./demo-agent # If your pyproject.toml is in a subdirectory, change this (e.g., ./my-agent)
     permissions:
       contents: 'read'
       id-token: 'write'
@@ -21,7 +25,7 @@ jobs:
         uses: astral-sh/setup-uv@v3
 
       - name: Install project dependencies
-        run: uv sync
+        run: uv sync --frozen
 
       - name: Install agents-cli
         run: uv tool install google-agents-cli
@@ -38,7 +42,7 @@ jobs:
 
       - name: Deploy Agent
         # Only deploy on push to main (e.g., after PR merge)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
         run: |
           agents-cli deploy \
             --project ${{ secrets.GCP_PROJECT_ID }} \
