@@ -37,7 +37,9 @@ jobs:
           create_credentials_file: true
           workload_identity_provider: 'projects/1011685515719/locations/global/workloadIdentityPools/github-identity-pool/providers/github-identity-pool'
           project_id: 'gsd-prompt-management'
-
+      - name: Set project
+        run: |
+          gcloud config set project gsd-prompt-management
       - name: Run Evaluations
         run: |
           agents-cli eval generate
