@@ -1,9 +1,9 @@
 metrics_to_run:
   - name: custom_response_quality
-    threshold: 5.0
 
 custom_metrics:
   - name: custom_response_quality
+    threshold: 5.0
     prompt_template: |
       You are an expert quality assurance evaluator for an enterprise AI assistant. Your task is to evaluate the agent's final response given the user prompt and the full agent trace (for tool-call and reasoning context).
 
