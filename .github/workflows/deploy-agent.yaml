@@ -38,13 +38,16 @@ jobs:
           project_id: 'gsd-prompt-management'
 
       - name: Run Evaluations
-        run: agents-cli eval
-
+        run: |
+          agents-cli eval generate
+          agents-cli eval grade
+      
+      - name: Set Deployment Target 
+        run: |
+          agents-cli scaffold enhance -d agent_runtime
+      #agents-cli scaffold enhance -d agent_runtime
       - name: Deploy Agent
         # Only deploy on push to main (e.g., after PR merge)
         if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
         run: |
-          agents-cli deploy \
-            --project ${{ secrets.GCP_PROJECT_ID }} \
-            --region ${{ secrets.GCP_REGION }} \
-            --no-confirm-project
+          agents-cli deploy --project gsd-prompt-management --region us-east1
