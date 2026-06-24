@@ -33,9 +33,9 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          # These secrets are typically configured during 'agents-cli infra cicd'
-          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
-          service_account: ${{ secrets.CICD_RUNNER_SA }}
+          create_credentials_file: true
+          workload_identity_provider: 'projects/1011685515719/locations/global/workloadIdentityPools/github-identity-pool/providers/github'
+          project_id: 'gsd-prompt-management'
 
       - name: Run Evaluations
         run: agents-cli eval
