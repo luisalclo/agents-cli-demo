@@ -53,4 +53,4 @@ jobs:
         # Only deploy on push to main (e.g., after PR merge)
         if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
         run: |
-          agents-cli deploy --project gsd-prompt-management --region us-east1
+          agents-cli deploy --project gsd-prompt-management --region us-east1 --update-env-vars GOOGLE_CLOUD_AGENT_ENGINE_ENABLE_TELEMETRY=true,OTEL_SEMCONV_STABILITY_OPT_IN=gen_ai_latest_experimental,OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=EVENT_ONLY
